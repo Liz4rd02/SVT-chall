@@ -8,7 +8,7 @@ PORT = 13412
 
 
 def make_payload():
-    key = "5B134977135E7D13"
+    key = "5B134977135E7D13"    #the binary just compares each iput byte to this costant
 
     payload = key.encode()
 
@@ -22,7 +22,7 @@ def main():
 
 
     payload = make_payload()
-    log.info(f"Sending payload {payload} of length {len(payload)}")
+    print(f"Sending payload {payload} of length {len(payload)}")
     server.sendline(payload)
 
     # read remainder of program output

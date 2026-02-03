@@ -1,5 +1,5 @@
 import os
-os.environ['PWNLIB_NOTERM'] = 'True'  # Configuration patch to allow pwntools to be run inside of an IDE
+os.environ['PWNLIB_NOTERM'] = 'True'
 os.environ['PWNLIB_SILENT'] = 'True'
 from pwn import *
 
@@ -19,9 +19,8 @@ def main():
     #server.recvuntil(b">")
     #server.sendline(b"0")
 
-
     payload = make_payload()
-    log.info(f"Sending payload {payload} of length {len(payload)}")
+    print(f"Sending payload {payload} of length {len(payload)}")
     server.sendline(payload)
 
     # read remainder of program output

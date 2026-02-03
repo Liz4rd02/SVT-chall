@@ -8,6 +8,10 @@ PORT = 13457
 
 
 def make_payload():
+    #alphanumeric string such that the sum modulo 16 is equal to the last character
+    #0000000000000000
+    #1111111111111142
+
     key = "0000000000000000"
 
     payload = key.encode()
@@ -22,7 +26,7 @@ def main():
 
 
     payload = make_payload()
-    log.info(f"Sending payload {payload} of length {len(payload)}")
+    print(f"Sending payload {payload} of length {len(payload)}")
     server.sendline(payload)
 
     # read remainder of program output

